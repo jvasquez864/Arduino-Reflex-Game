@@ -3,24 +3,24 @@
 //player2 win = green
 
 //port numbers for player 1
-int player1pt1 = 11;
-int player1pt2 = 10;
-int player1WinPt = 7;
-int player1Button = 8;
+int player1pt1Port = 11;
+int player1pt2Port = 10;
+int player1WinPtPort = 7;
+int player1ButtonPort = 8;
 
 //port numbers for player 2
-int player2pt1 = 3;
-int player2pt2 = 5;
-int player2WinPt = 6;
-int player2Button = 4;
+int player2pt1Port = 3;
+int player2pt2Port = 5;
+int player2WinPtPort = 6;
+int player2ButtonPort = 4;
 
 // port numbers for flashing LED and beeping sound
-int flashLED = 12;
-int sound = 2;
+int flashingLEDPort = 12;
+int beepingSoundPort = 2;
 
 // arrays of the port numbers for each player's points
-int player1points[] = { player1pt1, player1pt2, player1WinPt };
-int player2points[] = { player2pt1, player2pt2, player2WinPt };
+int player1points[] = { player1pt1Port, player1pt2Port, player1WinPtPort };
+int player2points[] = { player2pt1Port, player2pt2Port, player2WinPtPort };
 
 int p1ptCounter = 0;
 int p2ptCounter = 0;
@@ -28,9 +28,10 @@ int p2ptCounter = 0;
 char player1[] = "Player1";
 char player2[] = "Player2";
 
+//Delay values are in units of ms
 int beepAndFlashDelay = 25;
 int possibleIntervalForBeepOrFlash = 5000;
-int oneSecondPause = 1000;
+int oneSecondDelay = 1000;
 int soundFrequency = 262;
 
 int soundPlayStyle = 0;
@@ -38,23 +39,23 @@ int lightPlayStyle = 1;
 
 void setup() 
 {
-  pinMode(sound,OUTPUT);
-  pinMode(player1pt1, OUTPUT);
-  pinMode(player1pt2, OUTPUT);
-  pinMode(player2pt1, OUTPUT);
-  pinMode(player2pt2, OUTPUT);
-  pinMode(player1WinPt, OUTPUT);
-  pinMode(player2WinPt, OUTPUT);
-  pinMode(flashLED, OUTPUT);
+  pinMode(beepingSoundPort,OUTPUT);
+  pinMode(player1pt1Port, OUTPUT);
+  pinMode(player1pt2Port, OUTPUT);
+  pinMode(player2pt1Port, OUTPUT);
+  pinMode(player2pt2Port, OUTPUT);
+  pinMode(player1WinPtPort, OUTPUT);
+  pinMode(player2WinPtPort, OUTPUT);
+  pinMode(flashingLEDPort, OUTPUT);
   
-  pinMode(player1Button,INPUT);
+  pinMode(player1ButtonPort,INPUT);
   pinMode(player2Button,INPUT);
 }
 
 //Checks to see if either of the players are cheating and holding down a button
 bool validGame()
 {
-  if( digitalRead( player1Button ) == HIGH || digitalRead( player2Button ) == HIGH )
+  if( digitalRead( player1ButtonPort ) == HIGH || digitalRead( player2ButtonPort ) == HIGH )
   {
     return false;
   }
@@ -80,12 +81,12 @@ void givePoint(char player[], int& point)
 void playPhase()
 {
   //Wait for one of the players to react to the beep/flash 
-   while( digitalRead( player1Button ) == LOW && digitalRead( player2Button ) == LOW)
+   while( digitalRead( player1ButtonPort ) == LOW && digitalRead( player2Button ) == LOW)
   {
     delay(1);
   }
 
-  digitalRead( player1Button ) == HIGH 
+  digitalRead( player1ButtonPort ) == HIGH 
     ? givePoint( player1, p1ptCounter ) 
     : givePoint( player2, p2ptCounter );
 
@@ -97,14 +98,14 @@ void playGame( int playStyle )
   if( !validGame() ) return;
 
  if( playStyle == soundPlayStyle ){
-     tone( sound, soundFrequency, 0 );
+     tone( beepingSoundPort, soundFrequency, 0 );
      delay( beepAndFlashDelay );
-     tone( sound, soundFrequency, 1 );
+     tone( beepingSoundPort, soundFrequency, 1 );
  }
  else{
-    digitalWrite(flashLED, HIGH);
+    digitalWrite(flashingLEDPort, HIGH);
     delay( beepAndFlashDelay );
-    digitalWrite(flashLED,LOW);
+    digitalWrite(flashingLEDPort,LOW);
  }
 
   playPhase();
@@ -114,32 +115,32 @@ void resetGame()
 {
   p1ptCounter = 0;
   p2ptCounter = 0;
-  digitalWrite( player1pt1,LOW );
-  digitalWrite( player1pt2,LOW );
-  digitalWrite( player2pt1,LOW );
-  digitalWrite( player2pt2,LOW );
-  digitalWrite( player1WinPt,LOW );
-  digitalWrite( player2WinPt,LOW );
+  digitalWrite( player1pt1Port,LOW );
+  digitalWrite( player1pt2Port,LOW );
+  digitalWrite( player2pt1Port,LOW );
+  digitalWrite( player2pt2Port,LOW );
+  digitalWrite( player1WinPtPort,LOW );
+  digitalWrite( player2WinPtPort,LOW );
   
 }
 
 void alertGameBegin()
 {
-  digitalWrite( player1pt1,HIGH );
-  digitalWrite( player1pt2,HIGH );
-  digitalWrite( player2pt1,HIGH );
-  digitalWrite( player2pt2,HIGH );
-  digitalWrite( player1WinPt,HIGH );
-  digitalWrite( flashLED,HIGH );
+  digitalWrite( player1pt1Port,HIGH );
+  digitalWrite( player1pt2Port,HIGH );
+  digitalWrite( player2pt1Port,HIGH );
+  digitalWrite( player2pt2Port,HIGH );
+  digitalWrite( player1WinPtPort,HIGH );
+  digitalWrite( flashingLEDPort,HIGH );
   
-  delay( oneSecondPause );
+  delay( oneSecondDelay );
   
-  digitalWrite( player1pt1,LOW );
-  digitalWrite( player1pt2,LOW );
-  digitalWrite( player2pt1,LOW );
-  digitalWrite( player2pt2,LOW );
-  digitalWrite( player1WinPt,LOW );
-  digitalWrite( flashLED,LOW );
+  digitalWrite( player1pt1Port,LOW );
+  digitalWrite( player1pt2Port,LOW );
+  digitalWrite( player2pt1Port,LOW );
+  digitalWrite( player2pt2Port,LOW );
+  digitalWrite( player1WinPtPort,LOW );
+  digitalWrite( flashingLEDPort,LOW );
 }
 
 void alertPlayerWon( int playerPoints[] )
@@ -151,19 +152,19 @@ void alertPlayerWon( int playerPoints[] )
         digitalWrite(playerPoints[0],LOW);
         digitalWrite(playerPoints[1],LOW);
         digitalWrite(playerPoints[2],LOW);
-        delay( oneSecondPause );
+        delay( oneSecondDelay );
         digitalWrite(playerPoints[0],HIGH);
         digitalWrite(playerPoints[1],HIGH);
         digitalWrite(playerPoints[2],HIGH);
-        delay( oneSecondPause );
+        delay( oneSecondDelay );
      }
 }
 
 
 int getGamePlayStyle(){
-  if ( digitalRead( player1Button ) == HIGH && digitalRead( player2Button ) == LOW )
+  if ( digitalRead( player1ButtonPort ) == HIGH && digitalRead( player2Button ) == LOW )
     return soundPlayStyle;
-  else if ( digitalRead( player1Button ) == LOW && digitalRead( player2Button ) == HIGH )
+  else if ( digitalRead( player1ButtonPort ) == LOW && digitalRead( player2Button ) == HIGH )
     return lightPlayStyle;
   else return -1;
 }
@@ -183,7 +184,7 @@ void gameLoop(){
       : alertPlayerWon( player2points );
 
   }
-  delay( oneSecondPause );
+  delay( oneSecondDelay );
 }
 void loop() 
 {
